@@ -1,6 +1,8 @@
 # TreinamentoPostman
 Projeto usado para treinamento sobre postman
 
+Link para apresentação do treinamento: https://docs.google.com/presentation/d/1iq4JEig4OgzsBd34Yw86VnCPGEGnU_nNX2egR6h36Tc/edit?usp=sharing
+
 Preparando o ambiente:
 
 1- Instalar Postman : https://www.postman.com/downloads/

@@ -1,0 +1,426 @@
+{
+	"info": {
+		"_postman_id": "8e0aa6ad-d69c-4321-a639-fdef48de776b",
+		"name": "Rest API testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get tracks of a playlist",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "37670761-6ca6-4c64-afc7-db620fa47dfc",
+						"exec": [
+							"var auth = pm.environment.get(\"auth_get\");",
+							"pm.sendRequest({url:'https://api.spotify.com/v1/playlists/72TjLia2PICDcF66C0r8Uw/tracks',",
+							"    method:'GET',",
+							"    header:{'Authorization':auth}",
+							"}, function (err, response) {",
+							"    var jsonResponse = response.json();",
+							"    pm.environment.set(\"numero_musicas\", jsonResponse.total);",
+							"    pm.environment.set(\"user_id\", jsonResponse.items[0].added_by.id);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "92ec685b-cfc9-4bc0-9fde-bee1dde6284f",
+						"exec": [
+							"//Variáveis",
+							"var jsonResponse = pm.response.json();",
+							"var num_musicas = pm.environment.get(\"numero_musicas\");",
+							"var nome_musicas = ['Me Chamo Forró', 'Que seja'];",
+							"",
+							"",
+							"//.environment.set(\"user_id\", jsonResponse.);",
+							"//Função de teste que valida o status code, comparando com o valor retornados em um arquivo csv",
+							"pm.test(\"Valida status code está correto.\", function () {",
+							"    pm.response.to.have.status(data.StatusCodeEsperado);",
+							"});",
+							"",
+							"//Valida os nomes de todas as músicas retornadas no response comparando com os valores de um array",
+							"if(data.StatusCodeEsperado == 200){",
+							"    pm.test(\"Valida nomes das músicas estão corretas.\", function (){",
+							"        for(var i = 0; i < num_musicas; i++){",
+							"            pm.expect(jsonResponse.items[i].track.name).to.be.eql(nome_musicas[i]);",
+							"        }",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{auth_get}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/playlists/{{Playlist}}/tracks",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"playlists",
+						"{{Playlist}}",
+						"tracks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post a new playlist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6276c336-3c61-4810-a1fe-7f1f4d8ef05d",
+						"exec": [
+							"var jsonData = pm.response.json;",
+							"var schemaEsperado = ",
+							"  {\"definitions\": {},",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",",
+							"  \"$id\": \"http://example.com/root.json\",",
+							"  //\"type\": \"object\",  //COMMENT",
+							"  \"required\": [",
+							"    \"collaborative\",",
+							"    \"description\",",
+							"    \"external_urls\",",
+							"    \"followers\",",
+							"    \"href\",",
+							"    \"id\",",
+							"    \"images\",",
+							"    \"name\",",
+							"    \"owner\",",
+							"    \"primary_color\",",
+							"    \"public\",",
+							"    \"snapshot_id\",",
+							"    \"tracks\",",
+							"    \"type\",",
+							"    \"uri\"",
+							"  ],",
+							"  \"properties\": {",
+							"    \"collaborative\": {",
+							"      \"$id\": \"#/properties/collaborative\",",
+							"      \"type\": \"boolean\"",
+							"    },",
+							"    \"description\": {",
+							"      \"$id\": \"#/properties/description\",",
+							"      \"type\": \"string\",",
+							"      \"pattern\": \"^(.*)$\"",
+							"    },",
+							"    \"external_urls\": {",
+							"      \"$id\": \"#/properties/external_urls\",",
+							"      \"type\": \"object\",",
+							"      \"required\": [",
+							"        \"spotify\"",
+							"      ],",
+							"      \"properties\": {",
+							"        \"spotify\": {",
+							"          \"$id\": \"#/properties/external_urls/properties/spotify\",",
+							"          \"type\": \"string\",",
+							"          \"pattern\": \"^(.*)$\"",
+							"        }",
+							"      }",
+							"    },",
+							"    \"followers\": {",
+							"      \"$id\": \"#/properties/followers\",",
+							"      \"type\": \"object\",",
+							"      \"required\": [",
+							"        \"href\",",
+							"        \"total\"",
+							"      ],",
+							"      \"properties\": {",
+							"        \"href\": {",
+							"          \"$id\": \"#/properties/followers/properties/href\",",
+							"          \"type\": \"null\"",
+							"        },",
+							"        \"total\": {",
+							"          \"$id\": \"#/properties/followers/properties/total\",",
+							"          \"type\": \"number\"",
+							"        }",
+							"      }",
+							"    },",
+							"    \"href\": {",
+							"      \"$id\": \"#/properties/href\",",
+							"      \"type\": \"string\",",
+							"      \"pattern\": \"^(.*)$\"",
+							"    },",
+							"    \"id\": {",
+							"      \"$id\": \"#/properties/id\",",
+							"      \"type\": \"string\",",
+							"      \"pattern\": \"^(.*)$\"",
+							"    },",
+							"    \"images\": {",
+							"      \"$id\": \"#/properties/images\",",
+							"      \"type\": \"array\"",
+							"    },",
+							"    \"name\": {",
+							"      \"$id\": \"#/properties/name\",",
+							"      \"type\": \"string\",",
+							"      \"pattern\": \"^(.*)$\"",
+							"    },",
+							"    \"owner\": {",
+							"      \"$id\": \"#/properties/owner\",",
+							"      \"type\": \"object\",",
+							"      \"required\": [",
+							"        \"display_name\",",
+							"        \"external_urls\",",
+							"        \"href\",",
+							"        \"id\",",
+							"        \"type\",",
+							"        \"uri\"",
+							"      ],",
+							"      \"properties\": {",
+							"        \"display_name\": {",
+							"          \"$id\": \"#/properties/owner/properties/display_name\",",
+							"          \"type\": \"string\",",
+							"          \"pattern\": \"^(.*)$\"",
+							"        },",
+							"        \"external_urls\": {",
+							"          \"$id\": \"#/properties/owner/properties/external_urls\",",
+							"          \"type\": \"object\",",
+							"          \"required\": [",
+							"            \"spotify\"",
+							"          ],",
+							"          \"properties\": {",
+							"            \"spotify\": {",
+							"              \"$id\": \"#/properties/owner/properties/external_urls/properties/spotify\",",
+							"              \"type\": \"string\",",
+							"              \"pattern\": \"^(.*)$\"",
+							"            }",
+							"          }",
+							"        },",
+							"        \"href\": {",
+							"          \"$id\": \"#/properties/owner/properties/href\",",
+							"          \"type\": \"string\",",
+							"          \"pattern\": \"^(.*)$\"",
+							"        },",
+							"        \"id\": {",
+							"          \"$id\": \"#/properties/owner/properties/id\",",
+							"          \"type\": \"string\",",
+							"          \"pattern\": \"^(.*)$\"",
+							"        },",
+							"        \"type\": {",
+							"          \"$id\": \"#/properties/owner/properties/type\",",
+							"          \"type\": \"string\",",
+							"          \"pattern\": \"^(.*)$\"",
+							"        },",
+							"        \"uri\": {",
+							"          \"$id\": \"#/properties/owner/properties/uri\",",
+							"          \"type\": \"string\",",
+							"          \"pattern\": \"^(.*)$\"",
+							"        }",
+							"      }",
+							"    },",
+							"    \"primary_color\": {",
+							"      \"$id\": \"#/properties/primary_color\",",
+							"      \"type\": \"null\"",
+							"    },",
+							"    \"public\": {",
+							"      \"$id\": \"#/properties/public\",",
+							"      \"type\": \"boolean\"",
+							"    },",
+							"    \"snapshot_id\": {",
+							"      \"$id\": \"#/properties/snapshot_id\",",
+							"      \"type\": \"string\",",
+							"      \"pattern\": \"^(.*)$\"",
+							"    },",
+							"    \"tracks\": {",
+							"      \"$id\": \"#/properties/tracks\",",
+							"      \"type\": \"object\",",
+							"      \"required\": [",
+							"        \"href\",",
+							"        \"items\",",
+							"        \"limit\",",
+							"        \"next\",",
+							"        \"offset\",",
+							"        \"previous\",",
+							"        \"total\"",
+							"      ],",
+							"      \"properties\": {",
+							"        \"href\": {",
+							"          \"$id\": \"#/properties/tracks/properties/href\",",
+							"          \"type\": \"string\",",
+							"          \"pattern\": \"^(.*)$\"",
+							"        },",
+							"        \"items\": {",
+							"          \"$id\": \"#/properties/tracks/properties/items\",",
+							"          \"type\": \"array\"",
+							"        },",
+							"        \"limit\": {",
+							"          \"$id\": \"#/properties/tracks/properties/limit\",",
+							"          \"type\": \"number\"",
+							"        },",
+							"        \"next\": {",
+							"          \"$id\": \"#/properties/tracks/properties/next\",",
+							"          \"type\": \"null\"",
+							"        },",
+							"        \"offset\": {",
+							"          \"$id\": \"#/properties/tracks/properties/offset\",",
+							"          \"type\": \"number\"",
+							"        },",
+							"        \"previous\": {",
+							"          \"$id\": \"#/properties/tracks/properties/previous\",",
+							"          \"type\": \"null\"",
+							"        },",
+							"        \"total\": {",
+							"          \"$id\": \"#/properties/tracks/properties/total\",",
+							"          \"type\": \"number\"",
+							"        }",
+							"      }",
+							"    },",
+							"    \"type\": {",
+							"      \"$id\": \"#/properties/type\",",
+							"      \"type\": \"string\",",
+							"      \"pattern\": \"^(.*)$\"",
+							"    },",
+							"    \"uri\": {",
+							"      \"$id\": \"#/properties/uri\",",
+							"      \"type\": \"string\",",
+							"      \"pattern\": \"^(.*)$\"",
+							"    }",
+							"  }",
+							"};",
+							"",
+							"pm.test(\"Validar status code igual a 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Validar que o tempo de resposta é menos que 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							"",
+							"var Ajv = require('ajv'),",
+							"    ajv = new Ajv({logger: console}),",
+							"    schema = schemaEsperado;",
+							"",
+							"",
+							"pm.test('Schema é válido', function() {",
+							"    pm.expect(ajv.validate(schema, jsonData), JSON.stringify(ajv.errors)).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "BQBDHLnYwuJFODMUgtOEkSo9Me1OMM2CJeS0mPoe0sskWCBPNKPFaHRaQKLzNGx-i29woDbdSAGX9pRWxIo1w2P2kH33DjzVkP3Bm6sEcMNfl8SHH8RtetGtrjSxlpiN-6FHZYpUK9OmU-s4ctjLtLKTYNz2g-GDtuCkqFAg1BQNw-aC_fpkfLaZTieg7bnAwmfpphC_vm2__HuUpSb-xXTD4xdtu3LYCfNzZAKJ3ypM3VjN1EnKJxZzUZ_1S5u6WCtHg5lXkvxOrBx8v8by5SYRabXudsdUrw",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Postman Treinamento 02/2020\",\r\n  \"description\": \"POSTMAN treinamento Fevereiro/2020\",\r\n  \"public\": false\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/users/{{user_id}}/playlists",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}",
+						"playlists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://www.holidaywebservice.com",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d9e1f359-038a-4a1b-87ef-2ee963d7f6b8",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Validar response tem a palavra html\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"html\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:hs=\"http://www.holidaywebservice.com/HolidayService_v2/\">\r\n <soapenv:Body>\r\n     <hs:GetHolidaysForMonth>\r\n        <hs:year>2020</hs:year>\r\n        <hs:countryCode>UnitedStates</hs:countryCode>\r\n        <hs:month>11</hs:month>\r\n     </hs:GetHolidaysForMonth>\r\n </soapenv:Body>\r\n</soapenv:Envelope>",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://www.holidaywebservice.com/HolidayService_v2/HolidayService2.asmx",
+					"protocol": "http",
+					"host": [
+						"www",
+						"holidaywebservice",
+						"com"
+					],
+					"path": [
+						"HolidayService_v2",
+						"HolidayService2.asmx"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "Bearer BQAlTkSEnyXBHlOWxlHSwmpr5W5zA3CqH8yezgIYFXxlMWcp_W-M4BTYqE1wqCDI2a5VoP_X5t_IJFr6IINB0HDzH9NvxaU_xhvZHO6xIvoex-cNFLfcK6q-SzrVinI1ik0dnHIPJa_KDU2X1CGhvBoQ-BZ5FzQOM6DqNRLoX0XHcLZaYTLCD6MCsGDEd7EHlI_OfjtAoklyARnawW_xWrK9jmNqWLT5bz8rlH62NP-fO9dW_Lqsz1_exHqV0y6NbxMTsXqlUJs4anizx4MkB5b8FAT1FK_01A",
+				"type": "string"
+			}
+		]
+	},
+	"protocolProfileBehavior": {}
+}
